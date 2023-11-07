@@ -59,10 +59,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function move_right() {
     for (let i = 0; i < width * width; i++) {
       if (i % width === 0) {
-        let a = arr[i].innerHTML;
-        let b = arr[i + 1].innerHTML;
-        let c = arr[i + 2].innerHTML;
-        let d = arr[i + 3].innerHTML;
+        let a = array[i].innerHTML;
+        let b = array[i + 1].innerHTML;
+        let c = array[i + 2].innerHTML;
+        let d = array[i + 3].innerHTML;
         let e = [parseInt(a), parseInt(b), parseInt(c), parseInt(d)];
 
         let change = e.filter((num) => num);
@@ -70,20 +70,20 @@ document.addEventListener("DOMContentLoaded", () => {
         let qq = Array(lost).fill(0);
         let vara = qq.concat(change);
 
-        arr[i].innerHTML = vara[0];
-        arr[i + 3].innerHTML = vara[3];
-        arr[i + 2].innerHTML = vara[2];
-        arr[i + 1].innerHTML = vara[1];
+        array[i].innerHTML = vara[0];
+        array[i + 3].innerHTML = vara[3];
+        array[i + 2].innerHTML = vara[2];
+        array[i + 1].innerHTML = vara[1];
       }
     }
   }
 
   function move_up() {
     for (let i = 0; i < width; i++) {
-      let a = arr[i].innerHTML;
-      let b = arr[i + width].innerHTML;
-      let c = arr[i + width * 2].innerHTML;
-      let d = arr[i + width * 3].innerHTML;
+      let a = array[i].innerHTML;
+      let b = array[i + width].innerHTML;
+      let c = array[i + width * 2].innerHTML;
+      let d = array[i + width * 3].innerHTML;
       let column = [parseInt(a), parseInt(b), parseInt(c), parseInt(d)];
 
       let filteredColumn = column.filter((num) => num);
@@ -91,19 +91,19 @@ document.addEventListener("DOMContentLoaded", () => {
       let qq = Array(lost).fill(0);
       let newColumn = filteredColumn.concat(qq);
 
-      arr[i].innerHTML = newColumn[0];
-      arr[i + width].innerHTML = newColumn[1];
-      arr[i + width * 2].innerHTML = newColumn[2];
-      arr[i + width * 3].innerHTML = newColumn[3];
+      array[i].innerHTML = newColumn[0];
+      array[i + width].innerHTML = newColumn[1];
+      array[i + width * 2].innerHTML = newColumn[2];
+      array[i + width * 3].innerHTML = newColumn[3];
     }
   }
 
   function move_down() {
     for (let i = 0; i < width; i++) {
-      let a = arr[i].innerHTML;
-      let b = arr[i + width].innerHTML;
-      let c = arr[i + width * 2].innerHTML;
-      let d = arr[i + width * 3].innerHTML;
+      let a = array[i].innerHTML;
+      let b = array[i + width].innerHTML;
+      let c = array[i + width * 2].innerHTML;
+      let d = array[i + width * 3].innerHTML;
       let column = [parseInt(a), parseInt(b), parseInt(c), parseInt(d)];
 
       let filteredColumn = column.filter((num) => num);
@@ -111,13 +111,121 @@ document.addEventListener("DOMContentLoaded", () => {
       let qq = Array(lost).fill(0);
       let newColumn = qq.concat(filteredColumn);
 
-      arr[i].innerHTML = newColumn[0];
-      arr[i + width].innerHTML = newColumn[1];
-      arr[i + width * 2].innerHTML = newColumn[2];
-      arr[i + width * 3].innerHTML = newColumn[3];
+      array[i].innerHTML = newColumn[0];
+      array[i + width].innerHTML = newColumn[1];
+      array[i + width * 2].innerHTML = newColumn[2];
+      array[i + width * 3].innerHTML = newColumn[3];
     }
   }
   // all the movement components must change to hangle different sizes
 
-  
+  function add_row() {
+    for (let i = 0; i < width * width - 1; i++) {
+      if (array[i].innerHTML === array[i + 1].innerHTML) {
+        let sum =
+          parseInt(array[i].innerHTML) + parseInt(array[i + 1].innerHTML);
+        array[i].innerHTML = sum;
+        array[i + 1].innerHTML = 0;
+        answer += sum;
+        score.innerHTML = answer;
+      }
+    }
+    check();
+  }
+
+  function combine_columns() {
+    // why the 12 is here check this
+    for (let i = 0; i < 12; i++) {
+      if (array[i].innerHTML === array[i + width].innerHTML) {
+        let sum =
+          parseInt(array[i].innerHTML) + parseInt(array[i + width].innerHTML);
+        array[i].innerHTML = sum;
+        array[i + width].innerHTML = 0;
+        answer += sum;
+        score.innerHTML = answer;
+      }
+    }
+    check();
+  }
+
+  function navigation(e) {
+    if (e.keyCode === 37) {
+      keyLeft();
+    } else if (e.keyCode === 38) {
+      keyUp();
+    } else if (e.keyCode === 39) {
+      keyRight();
+    } else if (e.keyCode === 40) {
+      keyDown();
+    }
+  }
+  document.addEventListener("keyup", navigation);
+
+  function keyRight() {
+    move_right();
+    add_row();
+    move_right();
+    func_generate();
+  }
+  function keyLeft() {
+    move_left();
+    add_row();
+    move_left();
+    func_generate();
+  }
+  function keyUp() {
+    move_up();
+    combine_columns();
+    move_up();
+    func_generate();
+  }
+  function keyDown() {
+    move_down();
+    combine_columns();
+    move_down();
+    func_generate();
+  }
+
+  function check() {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].innerHTML == 2048) {
+        resultMSG.innerHTML = "CONGRATULATIONS!!! YOU HAVE WON.";
+        document.removeEventListener("keyup", navigation);
+        setTimeout(() => {
+          clear(), 3000;
+        });
+      }
+    }
+  }
+
+  function gameover() {
+    let qq = 0;
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].innerHTML === 0) {
+        
+        qq++;
+      }
+    }
+    if (qq === 0) {
+      resultMSG.innerHTML = "YOU HAVE LOST";
+      document.removeEventListener("keyup", navigation);
+      setTimeout(() => clear(), 3000);
+    }
+  }
+
+  function clear() {
+    clearInterval(timer);
+  }
+
+  function color() {
+    for (let i = 0; i < array.length; i++) {
+      // Add colors to every posible number make it interactive
+      if (array[i].innerHTML == 0) array[i].style.backgroundColor = "#afa192";
+      else if (array[i].innerHTML == 2)
+        array[i].style.backgroundColor = "#eee4da";
+    }
+  }
+  color();
+
+  var timer = setInterval(color, 50);
 });
