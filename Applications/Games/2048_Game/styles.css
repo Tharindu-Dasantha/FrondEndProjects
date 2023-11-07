@@ -61,6 +61,10 @@ h1 {
 .info {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    height: 8rem;
+    padding: 10px 20px;
+    border-radius: 10px;
     /* Change this value later */
     margin-bottom: 20px;
     background-color: #faf8ef;
